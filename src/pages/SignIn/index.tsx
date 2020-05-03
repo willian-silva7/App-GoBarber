@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import { View, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 import logoImg from '../../assets/logo.png';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -16,7 +18,11 @@ import {
 } from './styles';
 
 const SignIn: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
+  const handleSignIn = useCallback((data: object) => {
+    console.log(data);
+  }, []);
 
   return (
     <>
@@ -31,13 +37,18 @@ const SignIn: React.FC = () => {
             <View>
               <Title>Faça seu Logon</Title>
             </View>
+            <Form ref={formRef} onSubmit={handleSignIn}>
+              <Input name="email" icon="mail" placeholder="E-mail" />
+              <Input name="password" icon="lock" placeholder="Senha" />
 
-            <Input name="email" icon="mail" placeholder="E-mail" />
-            <Input name="password" icon="lock" placeholder="Senha" />
-
-            <Button onPress={() => navigation.navigate('SignIn')}>
-              Entrar
-            </Button>
+              <Button
+                onPress={() => {
+                  formRef.current?.submitForm();
+                }}
+              >
+                Entrar
+              </Button>
+            </Form>
 
             <ForgotPassword onPress={() => navigation.navigate('SignIn')}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
