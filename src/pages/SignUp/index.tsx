@@ -16,6 +16,7 @@ import logoImg from '../../assets/logo.png';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import getValidationsErrors from '../../utils/getValidationsErrors';
+import api from '../../services/api';
 
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
@@ -50,14 +51,14 @@ const SignUp: React.FC = () => {
         abortEarly: false,
       });
 
-      // await api.post('/users', data);
-
-      // history.push('/');
+      await api.post('/users', data);
 
       Alert.alert(
-        'Cadastro realizado com sucesso',
-        `Você ja pode fazer seu logon no GoBarber`,
+        'cadastro realizado com sucesso',
+        'voce já pode logar na aplicação',
       );
+
+      navigation.goBack();
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationsErrors(err);
@@ -84,7 +85,7 @@ const SignUp: React.FC = () => {
             </View>
             <Form ref={formRef} onSubmit={handleSignUp}>
               <Input
-                name="nome"
+                name="name"
                 icon="user"
                 placeholder="Nome"
                 autoCapitalize="words"
