@@ -32,43 +32,46 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    console.log(data);
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome é obrigatório'),
-        email: Yup.string()
-          .required('Email é obrigatório')
-          .email('Digite email válido'),
-        password: Yup.string().min(
-          6,
-          'A senha deve conter no mínimo 6 characteres',
-        ),
-      });
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      console.log(data);
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome é obrigatório'),
+          email: Yup.string()
+            .required('Email é obrigatório')
+            .email('Digite email válido'),
+          password: Yup.string().min(
+            6,
+            'A senha deve conter no mínimo 6 characteres',
+          ),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await api.post('/users', data);
+        await api.post('/users', data);
 
-      Alert.alert(
-        'cadastro realizado com sucesso',
-        'voce já pode logar na aplicação',
-      );
+        Alert.alert(
+          'cadastro realizado com sucesso',
+          'voce já pode logar na aplicação',
+        );
 
-      navigation.goBack();
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationsErrors(err);
-        formRef.current?.setErrors(errors);
+        navigation.goBack();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(err);
+          formRef.current?.setErrors(errors);
 
-        return;
+          return;
+        }
+        Alert.alert('Erro na autenticação', 'Checar as credenciais');
       }
-      Alert.alert('Erro na autenticação', 'Checar as credenciais');
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
